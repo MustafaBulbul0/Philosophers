@@ -49,6 +49,7 @@ void	sit_table(t_philo_table **table, t_thread *data)
 	head->philo_num = 1;
 	head->num = 0;
 	head->before_num = 0;
+	head->thinking = 1;
 	head->meal_time = 0;
 	head->next = NULL;
 	tail = head;
@@ -60,7 +61,8 @@ void	sit_table(t_philo_table **table, t_thread *data)
 			shut_program_err(table, data);
 		new_node->philo_num = i + 1;
 		new_node->num = 0;
-		head->before_num = 0;
+		new_node->before_num = 0;
+		new_node->thinking = 1;
 		new_node->meal_time = 0;
 		new_node->next = NULL;
 		tail->next = new_node;

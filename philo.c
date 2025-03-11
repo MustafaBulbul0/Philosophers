@@ -19,7 +19,8 @@ int main(int argc, char **argv)
 	if (!table)
 		shut_program_err(table, data);
 	sit_table(table, data);
-	who_do_what(table, data);
+
+	creat_thread(data->philo_num, data, table);
 
 
 	shut_program_scc(table, data);

@@ -9,9 +9,7 @@
 
 typedef struct	s_thread
 {
-	pthread_t		thread1;
-	void			**ret_val;
-	pthread_mutex_t	*mutex;
+	pthread_mutex_t	lock;
 
 	int	philo_num;
 	int	death_time;
@@ -23,11 +21,18 @@ typedef struct	s_thread
 typedef	struct s_philo_table
 {
 	int						philo_num;
-	int						num;		//2 yemek yemeli 1 yemek yiyemez çatalı yok
+	int						num;		//3 uyur 2 yemek yemeli 1 yemek yiyemez çatalı yok
 	int						before_num;
+	int						thinking;	//0 hayır , 1 evet
 	int						meal_time;	//kaç keredir yemek yemiyor
 	struct s_philo_table	*next;
 }	t_philo_table;
+
+typedef struct s_structs
+{
+	t_thread		*data;
+	t_philo_table	**table;
+}	t_structs;
 
 void	shut_program_err(t_philo_table **table, t_thread *data);
 void	shut_program_scc(t_philo_table **table, t_thread *data);
@@ -35,6 +40,6 @@ int		arg_checker(char **argv);
 void	init_data(t_thread *data, int argc, char **argv);
 int		ft_atoi(char *chNum);
 void	sit_table(t_philo_table **table, t_thread *data);
-void	who_do_what(t_philo_table **table, t_thread *data);
+void	creat_thread(int thread_count, t_thread *data, t_philo_table **table);
 
 #endif
