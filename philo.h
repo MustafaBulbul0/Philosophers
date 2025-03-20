@@ -6,6 +6,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <string.h>
+#include <sys/time.h>
 
 typedef struct	s_thread
 {
@@ -24,7 +25,7 @@ typedef	struct s_philo_table
 	int						num;		//3 uyur 2 yemek yemeli 1 yemek yiyemez çatalı yok
 	int						before_num;
 	int						thinking;	//0 hayır , 1 evet
-	int						meal_time;	//kaç keredir yemek yemiyor
+	int						meal_time;	//yemek yemediği süre
 	struct s_philo_table	*next;
 }	t_philo_table;
 

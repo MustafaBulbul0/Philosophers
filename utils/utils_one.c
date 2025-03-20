@@ -9,6 +9,8 @@ void	init_data(t_thread *data, int argc, char **argv)
 	data->sleep_time = ft_atoi(argv[4]);
 	if (argc == 6)
 		data->meals_num = ft_atoi(argv[5]);
+	else
+		data->meals_num = -1;
 }
 
 int	ft_atoi(char *chNum)
