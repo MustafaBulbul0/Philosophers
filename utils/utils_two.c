@@ -2,8 +2,11 @@
 
 static void	*thread_operations(void *all_structs);
 
-static void	thinking_time(t_philo_table **table)
+static void	thinking_time(t_philo_table **table , t_thread *data)
 {
+	struct timeval end;
+
+	printf("%ld %d is thinking\n", (end.tv_usec - data->start.tv_usec) / 1000, (*table)->philo_num);
 	(*table)->thinking = 1;
 }
 
@@ -12,9 +15,9 @@ static void	sleeping_time(t_philo_table **table, t_thread *data)
 	struct timeval	end;
 
 	pthread_mutex_lock(&(data->lock));
-	usleep(data->sleep_time);
+	usleep((data->sleep_time) * 1000);
 	gettimeofday(&end, NULL);
-	printf("%ld %d is sleeping\n", end.tv_usec - data->start.tv_usec, (*table)->philo_num);
+	printf("%ld %d is sleeping\n", (end.tv_usec - data->start.tv_usec) / 1000, (*table)->philo_num);
 	(*table)->meal_time += data->sleep_time;
 	pthread_mutex_unlock(&(data->lock));
 }
@@ -26,11 +29,11 @@ static void	eating_time(t_philo_table **table, t_thread *data)
 	pthread_mutex_lock(&(data->lock));
 	(*table)->thinking = 0;
 	(*table)->meal_time = 0;
-	usleep(data->eat_time);
+	usleep((data->eat_time) * 1000);
 	gettimeofday(&end,NULL);
-	printf("%ld %d has taken a fork\n", end.tv_usec - data->start.tv_usec, (*table)->philo_num);
-	printf("%ld %d has taken a fork\n", end.tv_usec - data->start.tv_usec, (*table)->philo_num);
-	printf("%ld %d is eating\n", end.tv_usec - data->start.tv_usec, (*table)->philo_num);
+	printf("%ld %d has taken a fork\n", (end.tv_usec - data->start.tv_usec) / 1000, (*table)->philo_num);
+	printf("%ld %d has taken a fork\n", (end.tv_usec - data->start.tv_usec) / 1000, (*table)->philo_num);
+	printf("%ld %d is eating\n", (end.tv_usec - data->start.tv_usec) / 1000, (*table)->philo_num);
 	pthread_mutex_unlock(&(data->lock));
 }
 
@@ -60,12 +63,12 @@ void	*monitor(void *all_structs)
 	while (is_dead(&table, data))
 	{
 		pthread_mutex_lock(&(data->lock));
-			break;
+
 		pthread_mutex_unlock(&(data->lock));
 	}
 }
 
-void	creat_thread(int thread_count, t_thread *data, t_philo_table **table)
+void	create_thread(int thread_count, t_thread *data, t_philo_table **table)
 {
 	pthread_t		thread[thread_count + 1];
 	t_philo_table	*temp;
@@ -84,7 +87,7 @@ void	creat_thread(int thread_count, t_thread *data, t_philo_table **table)
 	{
 		all_structs->table = temp;
 		pthread_create(&thread[i], NULL, thread_operations, (void *)all_structs);
-		usleep(100);
+		usleep(1000);
 		temp = temp->next;
 	}
 	i = -1;
@@ -107,8 +110,11 @@ static void	*thread_operations(void *all_structs)
 
 	while (1)
 	{
-		break;
+		if (table->changed)
+		{
+			eating_time(&table, data);
+			sleeping_time(&table, data);
+			thinking_time(&table, data);
+		}
 	}
-
-
 }

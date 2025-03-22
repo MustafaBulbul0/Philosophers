@@ -41,6 +41,6 @@ int		arg_checker(char **argv);
 void	init_data(t_thread *data, int argc, char **argv);
 int		ft_atoi(char *chNum);
 void	sit_table(t_philo_table **table, t_thread *data);
-void	creat_thread(int thread_count, t_thread *data, t_philo_table **table);
+void	create_thread(int thread_count, t_thread *data, t_philo_table **table);
 
 #endif

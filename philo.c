@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 		shut_program_err(table, data);
 	sit_table(table, data);
 
-	creat_thread(data->philo_num, data, table);
+	create_thread(data->philo_num, data, table);
 
 
 	shut_program_scc(table, data);
