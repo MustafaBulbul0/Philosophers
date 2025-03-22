@@ -2,23 +2,38 @@
 
 static void	*thread_operations(void *all_structs);
 
-void	thinking_time(t_philo_table **table)
+static void	thinking_time(t_philo_table **table)
 {
 	(*table)->thinking = 1;
 }
 
-void	sleeping_time(t_philo_table **table, t_thread *data)
+static void	sleeping_time(t_philo_table **table, t_thread *data)
 {
-	struct timeval	start;
 	struct timeval	end;
 
-	(*table)->num = 3;
-	gettimeofday(&start, NULL);
+	pthread_mutex_lock(&(data->lock));
 	usleep(data->sleep_time);
 	gettimeofday(&end, NULL);
-	printf("%ld\n", end.tv_usec - start.tv_usec);
+	printf("%ld %d is sleeping\n", end.tv_usec - data->start.tv_usec, (*table)->philo_num);
 	(*table)->meal_time += data->sleep_time;
+	pthread_mutex_unlock(&(data->lock));
 }
+
+static void	eating_time(t_philo_table **table, t_thread *data)
+{
+	struct timeval	end;
+	
+	pthread_mutex_lock(&(data->lock));
+	(*table)->thinking = 0;
+	(*table)->meal_time = 0;
+	usleep(data->eat_time);
+	gettimeofday(&end,NULL);
+	printf("%ld %d has taken a fork\n", end.tv_usec - data->start.tv_usec, (*table)->philo_num);
+	printf("%ld %d has taken a fork\n", end.tv_usec - data->start.tv_usec, (*table)->philo_num);
+	printf("%ld %d is eating\n", end.tv_usec - data->start.tv_usec, (*table)->philo_num);
+	pthread_mutex_unlock(&(data->lock));
+}
+
 int	is_dead(t_philo_table **table, t_thread *data)
 {
 	if ((*table)->meal_time > data->death_time)
@@ -37,38 +52,40 @@ void	*monitor(void *all_structs)
 {
 	t_structs		*structs;
 	t_thread		*data;
-	t_philo_table	**table;
+	t_philo_table	*table;
 
 	structs = (t_structs *)all_structs;
 	data = structs->data;
 	table = structs->table;
-	while (is_dead(table, data))
+	while (is_dead(&table, data))
 	{
 		pthread_mutex_lock(&(data->lock));
-
+			break;
 		pthread_mutex_unlock(&(data->lock));
 	}
-	pthread_mutex_destroy(&(data->lock));
 }
 
 void	creat_thread(int thread_count, t_thread *data, t_philo_table **table)
 {
-	pthread_t	thread[thread_count + 1];
-	t_structs	*all_structs;
-	int			i;
+	pthread_t		thread[thread_count + 1];
+	t_philo_table	*temp;
+	t_structs		*all_structs;
+	int				i;
 
+	temp = (*table);
 	all_structs = (t_structs *)malloc(sizeof(t_structs));
 	all_structs->data = data;
-	all_structs->table = table;
+	all_structs->table = (*table);
 	pthread_mutex_init(&(data->lock), NULL);
 	pthread_create(&thread[0], NULL, monitor, (void *)all_structs);
-	i = -1;
-	while (++i < thread_count)
+	i = 0;
+	gettimeofday(&(data->start), NULL);
+	while (++i < thread_count + 1)
 	{
-		(*table)->philo_num = i + 1;
+		all_structs->table = temp;
 		pthread_create(&thread[i], NULL, thread_operations, (void *)all_structs);
 		usleep(100);
-		(*table) = (*table)->next;
+		temp = temp->next;
 	}
 	i = -1;
 	while (++i < thread_count)
@@ -82,12 +99,16 @@ static void	*thread_operations(void *all_structs)
 {
 	t_structs		*structs;
 	t_thread		*data;
-	t_philo_table	**table;
+	t_philo_table	*table;
 
 	structs = (t_structs *)all_structs;
 	data = structs->data;
 	table = structs->table;
 
+	while (1)
+	{
+		break;
+	}
 
 
 }

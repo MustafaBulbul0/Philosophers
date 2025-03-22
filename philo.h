@@ -11,6 +11,7 @@
 typedef struct	s_thread
 {
 	pthread_mutex_t	lock;
+	struct timeval start;
 
 	int	philo_num;
 	int	death_time;
@@ -22,17 +23,16 @@ typedef struct	s_thread
 typedef	struct s_philo_table
 {
 	int						philo_num;
-	int						num;		//3 uyur 2 yemek yemeli 1 yemek yiyemez çatalı yok
-	int						before_num;
 	int						thinking;	//0 hayır , 1 evet
 	int						meal_time;	//yemek yemediği süre
+	int						changed;	//0 hayır 1 evet
 	struct s_philo_table	*next;
 }	t_philo_table;
 
 typedef struct s_structs
 {
 	t_thread		*data;
-	t_philo_table	**table;
+	t_philo_table	*table;
 }	t_structs;
 
 void	shut_program_err(t_philo_table **table, t_thread *data);
