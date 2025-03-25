@@ -25,6 +25,7 @@ typedef	struct s_philo_table
 {
 	int						philo_num;
 	int						meal_time;
+	int						total_meal;
 	pthread_mutex_t			fork;
 	struct s_philo_table	*next;
 }	t_philo_table;

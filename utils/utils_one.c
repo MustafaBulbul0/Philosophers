@@ -38,6 +38,23 @@ int	ft_atoi(char *chNum)
 	return (j * k);
 }
 
+static void	init_table(t_philo_table *table, t_thread *data)
+{
+	t_philo_table	*temp;
+	int				num;
+
+	num = 1;
+	temp = table;
+	while (num <= data->philo_num)
+	{
+		temp->philo_num = num;
+		temp->meal_time = 0;
+		temp->total_meal = 0;
+		temp = temp->next;
+		num++;
+	}
+}
+
 void	sit_table(t_philo_table **table, t_thread *data)
 {
 	int				i;
@@ -48,8 +65,7 @@ void	sit_table(t_philo_table **table, t_thread *data)
 	head = (t_philo_table *)malloc(sizeof(t_philo_table));
 	if (!head)
 		shut_program_err(table, data);
-	head->philo_num = 1;
-	head->meal_time = 0;
+	pthread_mutex_init(&(head->fork), NULL);
 	head->next = NULL;
 	tail = head;
 	i = 1;
@@ -58,14 +74,14 @@ void	sit_table(t_philo_table **table, t_thread *data)
 		new_node = (t_philo_table *)malloc(sizeof(t_philo_table));
 		if (!new_node)
 			shut_program_err(table, data);
-		new_node->philo_num = i + 1;
-		new_node->meal_time = 0;
+		pthread_mutex_init(&(new_node->fork), NULL);
 		new_node->next = NULL;
 		tail->next = new_node;
 		tail = new_node;
 		i++;
 	}
 	tail->next = head;
+	init_table(head, data);
 	*table = head;
 }
 
