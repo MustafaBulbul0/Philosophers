@@ -40,16 +40,15 @@ int	ft_atoi(char *chNum)
 
 void	sit_table(t_philo_table **table, t_thread *data)
 {
-	int			 i;
-	t_philo_table *new_node;
-	t_philo_table *head;
-	t_philo_table *tail;
+	int				i;
+	t_philo_table	*new_node;
+	t_philo_table	*head;
+	t_philo_table	*tail;
 
 	head = (t_philo_table *)malloc(sizeof(t_philo_table));
 	if (!head)
 		shut_program_err(table, data);
 	head->philo_num = 1;
-	head->thinking = 1;
 	head->meal_time = 0;
 	head->next = NULL;
 	tail = head;
@@ -60,7 +59,6 @@ void	sit_table(t_philo_table **table, t_thread *data)
 		if (!new_node)
 			shut_program_err(table, data);
 		new_node->philo_num = i + 1;
-		new_node->thinking = 1;
 		new_node->meal_time = 0;
 		new_node->next = NULL;
 		tail->next = new_node;
@@ -69,4 +67,17 @@ void	sit_table(t_philo_table **table, t_thread *data)
 	}
 	tail->next = head;
 	*table = head;
+}
+
+void	get_time(t_thread *data, int philo, char *text)
+{
+	struct timeval	end;
+	long long		time;
+
+	pthread_mutex_lock(&(data->lock));
+	gettimeofday(&end, NULL);
+	time = (end.tv_sec - data->start.tv_sec) * 1000;
+	time += (end.tv_usec - data->start.tv_usec) / 1000;
+	printf("%lld %d %s\n", time, philo, text);
+	pthread_mutex_unlock(&(data->lock));
 }

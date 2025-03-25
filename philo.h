@@ -11,7 +11,8 @@
 typedef struct	s_thread
 {
 	pthread_mutex_t	lock;
-	struct timeval start;
+	struct timeval	start;
+	struct timeval	end;
 
 	int	philo_num;
 	int	death_time;
@@ -23,9 +24,8 @@ typedef struct	s_thread
 typedef	struct s_philo_table
 {
 	int						philo_num;
-	int						thinking;	//0 hayır , 1 evet
-	int						meal_time;	//yemek yemediği süre
-	int						changed;	//0 hayır 1 evet
+	int						meal_time;
+	pthread_mutex_t			fork;
 	struct s_philo_table	*next;
 }	t_philo_table;
 
@@ -42,5 +42,6 @@ void	init_data(t_thread *data, int argc, char **argv);
 int		ft_atoi(char *chNum);
 void	sit_table(t_philo_table **table, t_thread *data);
 void	create_thread(int thread_count, t_thread *data, t_philo_table **table);
+void	get_time(t_thread *data, int philo, char *text);
 
 #endif
