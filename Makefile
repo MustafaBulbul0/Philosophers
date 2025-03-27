@@ -1,11 +1,12 @@
 NAME = philo
-CFLAGS = -g
+CFLAGS = -Wall -Wextra -Werror -g
 RM = rm -rf
 CC = cc
 
 SRC = philo.c \
 	utils/utils_one.c \
 	utils/utils_two.c \
+	utils/philosopher_life_cycle.c \
 	utils/free.c
 
 OBJ = $(SRC:.c=.o)

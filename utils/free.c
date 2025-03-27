@@ -1,27 +1,27 @@
 #include "../philo.h"
 
-static void	free_table(t_philo_table **table);
+static void free_table(t_philo_table **table);
 
-void	shut_program_err(t_philo_table **table, t_thread *data)
+void shut_program_err(t_philo_table **table, t_thread *data)
 {
 	if (data)
 		free(data);
-	if (table)
+	if (table && *table)
 		free_table(table);
 	write(2, "ERROR\n", 6);
 	exit(EXIT_FAILURE);
 }
 
-void	shut_program_scc(t_philo_table **table, t_thread *data)
+void shut_program_scc(t_philo_table **table, t_thread *data)
 {
 	if (data)
 		free(data);
-	if (table)
+	if (table && *table)
 		free_table(table);
 	exit(EXIT_SUCCESS);
 }
 
-void	free_table(t_philo_table **table)
+void free_table(t_philo_table **table)
 {
 	t_philo_table *temp;
 	t_philo_table *current;
@@ -29,6 +29,7 @@ void	free_table(t_philo_table **table)
 
 	if (!table || !*table)
 		return;
+
 	head = *table;
 	current = head->next;
 
@@ -39,7 +40,6 @@ void	free_table(t_philo_table **table)
 		free(temp);
 	}
 	free(head);
-	*table = NULL;
-	free(table);
-	table = NULL;
+	*table = NULL; // bunu bırak (doğru)
+	// free(table); (BU SATIRI KALDIR!)
 }

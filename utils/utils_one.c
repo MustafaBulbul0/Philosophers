@@ -1,19 +1,6 @@
 #include "../philo.h"
 
-
-void	init_data(t_thread *data, int argc, char **argv)
-{
-	data->philo_num = ft_atoi(argv[1]);
-	data->death_time = ft_atoi(argv[2]);
-	data->eat_time = ft_atoi(argv[3]);
-	data->sleep_time = ft_atoi(argv[4]);
-	if (argc == 6)
-		data->meals_num = ft_atoi(argv[5]);
-	else
-		data->meals_num = -1;
-}
-
-int	ft_atoi(char *chNum)
+static int	ft_atoi(char *chNum)
 {
 	int				i;
 	int				k;
@@ -38,6 +25,18 @@ int	ft_atoi(char *chNum)
 	return (j * k);
 }
 
+void	init_data(t_thread *data, int argc, char **argv)
+{
+	data->philo_num = ft_atoi(argv[1]);
+	data->death_time = ft_atoi(argv[2]);
+	data->eat_time = ft_atoi(argv[3]);
+	data->sleep_time = ft_atoi(argv[4]);
+	if (argc == 6)
+		data->meals_num = ft_atoi(argv[5]);
+	else
+		data->meals_num = -1;
+}
+
 static void	init_table(t_philo_table *table, t_thread *data)
 {
 	t_philo_table	*temp;
@@ -50,6 +49,7 @@ static void	init_table(t_philo_table *table, t_thread *data)
 		temp->philo_num = num;
 		temp->meal_time = 0;
 		temp->total_meal = 0;
+		temp->stop = 0;
 		temp = temp->next;
 		num++;
 	}
@@ -68,8 +68,8 @@ void	sit_table(t_philo_table **table, t_thread *data)
 	pthread_mutex_init(&(head->fork), NULL);
 	head->next = NULL;
 	tail = head;
-	i = 1;
-	while (i < data->philo_num)
+	i = 0;
+	while (++i < data->philo_num)
 	{
 		new_node = (t_philo_table *)malloc(sizeof(t_philo_table));
 		if (!new_node)
@@ -78,7 +78,6 @@ void	sit_table(t_philo_table **table, t_thread *data)
 		new_node->next = NULL;
 		tail->next = new_node;
 		tail = new_node;
-		i++;
 	}
 	tail->next = head;
 	init_table(head, data);

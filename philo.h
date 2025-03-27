@@ -26,6 +26,7 @@ typedef	struct s_philo_table
 	int						philo_num;
 	int						meal_time;
 	int						total_meal;
+	int						stop;
 	pthread_mutex_t			fork;
 	struct s_philo_table	*next;
 }	t_philo_table;
@@ -36,13 +37,13 @@ typedef struct s_structs
 	t_philo_table	*table;
 }	t_structs;
 
-void	shut_program_err(t_philo_table **table, t_thread *data);
 void	shut_program_scc(t_philo_table **table, t_thread *data);
-int		arg_checker(char **argv);
+void	shut_program_err(t_philo_table **table, t_thread *data);
 void	init_data(t_thread *data, int argc, char **argv);
-int		ft_atoi(char *chNum);
 void	sit_table(t_philo_table **table, t_thread *data);
 void	create_thread(int thread_count, t_thread *data, t_philo_table **table);
+void	*thread_operations(void *all_structs);
+int		is_full(t_philo_table *table, t_thread *data);
 void	get_time(t_thread *data, int philo, char *text);
 
 #endif
