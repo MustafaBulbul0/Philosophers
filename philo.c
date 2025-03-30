@@ -8,23 +8,24 @@ int main(int argc, char **argv)
 	t_philo_table	**table;
 
 	if (argc < 5 || argc > 6)
-		shut_program_err(NULL, NULL);
+		return (0);
 	if (arg_checker(argv))
-		return (1);
+		return (0);
 	data = (t_thread *)malloc(sizeof(t_thread));
 	if (!data)
-		shut_program_err(NULL, data);
+		return (0);
 	init_data(data, argc, argv);
 	table = (t_philo_table **)malloc(sizeof(t_philo_table *));
 	if (!table)
-		shut_program_err(table, data);
-	sit_table(table, data);
-
-	create_thread(data->philo_num, data, table);
-
-
+	{
+		free(data);
+		return (0);
+	}
+	data->return_val = sit_table(table, data);
+	if (data->return_val)
+		create_thread(data->philo_num, data, table);
 	shut_program_scc(table, data);
-	return 0;
+	return (0);
 }
 
 int	arg_checker(char **argv)
@@ -39,7 +40,7 @@ int	arg_checker(char **argv)
 		while (argv[i][j])
 		{
 			if (!(argv[i][j] >= '0' && argv[i][j] <= '9'))
-				shut_program_err(NULL, NULL);
+				return (1);
 			j++;
 		}
 		i++;

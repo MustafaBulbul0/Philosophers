@@ -17,6 +17,25 @@ static int	is_dead(t_philo_table **table, t_thread *data)
 	return (-1);
 }
 
+int	is_full(t_philo_table *table, t_thread *data)
+{
+	t_philo_table	*temp;
+
+	temp = table;
+	if (data->meals_num == -1)
+		return (0);
+	if (temp->total_meal < data->meals_num)
+		return (0);
+	temp = temp->next;
+	while (temp->philo_num != 1)
+	{
+		if (temp->total_meal < data->meals_num - 1)
+			return (0);
+		temp = temp->next;
+	}
+	return (1);
+}
+
 static void	*monitor(void *all_structs)
 {
 	t_structs		*structs;
@@ -28,16 +47,17 @@ static void	*monitor(void *all_structs)
 	structs = (t_structs *)all_structs;
 	data = structs->data;
 	table = structs->table;
-	while (1)
+	while (data->stop != 1)
 	{
 		philo_situation = is_dead(&(table), data);
 		if (philo_situation != -1)
 		{
+			data->stop = 1;
 			gettimeofday(&(data->end), NULL);
 			time = (data->end.tv_sec - data->start.tv_sec) * 1000;
 			time += (data->end.tv_usec - data->start.tv_usec) / 1000;
-			printf("%lld %d died", time, philo_situation);
-			shut_program_scc(&table, data);
+			printf("%lld %d died\n", time, philo_situation);
+			break ;
 		}
 	}
 	free(structs);
@@ -71,5 +91,23 @@ void	create_thread(int thread_count, t_thread *data, t_philo_table **table)
 	while (++i < thread_count)
 		pthread_join(thread[i], NULL);
 	pthread_mutex_destroy(&(data->lock));
-	shut_program_scc(table, data);
+}
+
+void	total_meal_control(t_philo_table *table, t_thread *data)
+{
+	t_philo_table	*temp;
+	int				i;
+
+	i = 0;
+	if (data->meals_num == -1)
+		return ;
+	temp = table;
+	while (i < data->philo_num)
+	{
+		if (temp->total_meal < data->meals_num)
+			return ;
+		temp = temp->next;
+		i++;
+	}
+	data->stop = 1;
 }

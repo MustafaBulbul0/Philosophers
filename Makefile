@@ -6,6 +6,7 @@ CC = cc
 SRC = philo.c \
 	utils/utils_one.c \
 	utils/utils_two.c \
+	utils/utils_three.c \
 	utils/philosopher_life_cycle.c \
 	utils/free.c
 

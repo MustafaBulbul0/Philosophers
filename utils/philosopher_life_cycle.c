@@ -3,6 +3,7 @@
 static void	thinking_time(t_philo_table **table , t_thread *data)
 {
 	get_time(data, (*table)->philo_num, "is thinking");
+	gettimeofday(&((*table)->thinking_start), NULL);
 }
 
 static void	sleeping_time(t_philo_table **table, t_thread *data)
@@ -14,6 +15,17 @@ static void	sleeping_time(t_philo_table **table, t_thread *data)
 
 static void	eating_time(t_philo_table **table, t_thread *data)
 {
+	long long		time;
+
+	gettimeofday(&((*table)->thinking_end), NULL);
+	time = ((*table)->thinking_end.tv_sec - (*table)->thinking_start.tv_sec) * 1000;
+	time += ((*table)->thinking_end.tv_sec - (*table)->thinking_start.tv_sec) / 1000;
+	(*table)->meal_time += time;
+		if ((*table)->meal_time >= data->death_time)
+		{
+			data->stop = 1;
+			return ;
+		}
 	(*table)->meal_time = 0;
 	(*table)->total_meal++;
 	get_time(data, (*table)->philo_num, "has taken a fork");
@@ -27,15 +39,15 @@ static void lock_unlock_forks(t_philo_table *table, int lock)
     t_philo_table *left_fork;
     t_philo_table *right_fork;
 
-    if (table->philo_num < table->next->philo_num)
+    if (table->philo_num % 2 == 1)
     {
-        left_fork = table;
-        right_fork = table->next;
+		right_fork = table;
+        left_fork = table->next;
     }
     else
     {
-        left_fork = table->next;
-        right_fork = table;
+		right_fork = turn_back(table);
+		left_fork = table;
     }
 	if (lock ==1)
     {
@@ -60,11 +72,22 @@ void	*thread_operations(void *all_structs)
 	table = structs->table;
 	while (1)
 	{
-			lock_unlock_forks(table, 1);
-			eating_time(&table, data);
-			lock_unlock_forks(table, 0);
-			sleeping_time(&table, data);
-			thinking_time(&table, data);
+		if (data->stop)
+			break ;
+		lock_unlock_forks(table, 1);
+		if (data->stop)
+			break ;
+		eating_time(&table, data);
+		total_meal_control(table, data);
+		if (data->stop)
+			break ;
+		lock_unlock_forks(table, 0);
+		if (data->stop)
+			break ;
+		sleeping_time(&table, data);
+		if (data->stop)
+			break ;
+		thinking_time(&table, data);
 	}
 	return (NULL);
 }
