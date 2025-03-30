@@ -1,9 +1,9 @@
 #include "../philo.h"
 
-static void	thinking_time(t_philo_table **table , t_thread *data)
+static void	thinking_time(t_philo_table **table, t_thread *data)
 {
-	get_time(data, (*table)->philo_num, "is thinking");
 	gettimeofday(&((*table)->thinking_start), NULL);
+	get_time(data, (*table)->philo_num, "is thinking");
 }
 
 static void	sleeping_time(t_philo_table **table, t_thread *data)
@@ -19,13 +19,14 @@ static void	eating_time(t_philo_table **table, t_thread *data)
 
 	gettimeofday(&((*table)->thinking_end), NULL);
 	time = ((*table)->thinking_end.tv_sec - (*table)->thinking_start.tv_sec) * 1000;
-	time += ((*table)->thinking_end.tv_sec - (*table)->thinking_start.tv_sec) / 1000;
+	time += ((*table)->thinking_end.tv_usec - (*table)->thinking_start.tv_usec) / 1000;
 	(*table)->meal_time += time;
-		if ((*table)->meal_time >= data->death_time)
-		{
-			data->stop = 1;
-			return ;
-		}
+	if ((*table)->meal_time > data->death_time)
+	{
+		data->stop = 1;
+		get_time(data, (*table)->philo_num, "died");
+		return ;
+	}
 	(*table)->meal_time = 0;
 	(*table)->total_meal++;
 	get_time(data, (*table)->philo_num, "has taken a fork");
@@ -34,30 +35,30 @@ static void	eating_time(t_philo_table **table, t_thread *data)
 	usleep((data->eat_time) * 1000);
 }
 
-static void lock_unlock_forks(t_philo_table *table, int lock)
+static void	lock_unlock_forks(t_philo_table *table, int lock)
 {
-    t_philo_table *left_fork;
-    t_philo_table *right_fork;
+	t_philo_table	*left_fork;
+	t_philo_table	*right_fork;
 
-    if (table->philo_num % 2 == 1)
-    {
+	if (table->philo_num % 2 == 1)
+	{
 		right_fork = table;
-        left_fork = table->next;
-    }
-    else
-    {
+		left_fork = table->next;
+	}
+	else
+	{
 		right_fork = turn_back(table);
 		left_fork = table;
-    }
-	if (lock ==1)
-    {
+	}
+	if (lock == 1)
+	{
 		pthread_mutex_lock(&(left_fork->fork));
-    	pthread_mutex_lock(&(right_fork->fork));
+		pthread_mutex_lock(&(right_fork->fork));
 	}
 	else
 	{
 		pthread_mutex_unlock(&(right_fork->fork));
-    	pthread_mutex_unlock(&(left_fork->fork));
+		pthread_mutex_unlock(&(left_fork->fork));
 	}
 }
 

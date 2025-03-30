@@ -1,8 +1,8 @@
 #include "../philo.h"
 
-static void free_table(t_philo_table **table);
+static void	free_table(t_philo_table **table);
 
-void shut_program_scc(t_philo_table **table, t_thread *data)
+void	shut_program_scc(t_philo_table **table, t_thread *data)
 {
 	if (data)
 		free(data);
@@ -10,11 +10,11 @@ void shut_program_scc(t_philo_table **table, t_thread *data)
 		free_table(table);
 }
 
-void free_table(t_philo_table **table)
+void	free_table(t_philo_table **table)
 {
-	t_philo_table *temp;
-	t_philo_table *current;
-	t_philo_table *head;
+	t_philo_table	*temp;
+	t_philo_table	*current;
+	t_philo_table	*head;
 
 	if (!table || !*table)
 		return;
