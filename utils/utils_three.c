@@ -1,4 +1,4 @@
-#include "../philo.h"
+#include "./../philo.h"
 
 t_philo_table	*turn_back(t_philo_table *table)
 {

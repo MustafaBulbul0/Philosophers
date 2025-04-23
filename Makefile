@@ -1,24 +1,24 @@
 NAME = philo
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAG = -Wall -Wextra -g
 RM = rm -rf
 CC = cc
+SRC = main.c \
+	./utils/utils_one.c \
+	./utils/utils_two.c \
+	./utils/utils_three.c \
+	./utils/philosophers_life_cycle.c \
+	./utils/free.c
 
-SRC = philo.c \
-	utils/utils_one.c \
-	utils/utils_two.c \
-	utils/utils_three.c \
-	utils/philosopher_life_cycle.c \
-	utils/free.c
 
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
+	$(CC) $(CFLAG) $(OBJ) -o $(NAME)
 
 %.o: %.c philo.h
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAG) -c $< -o $@
 
 clean:
 	$(RM) $(OBJ)

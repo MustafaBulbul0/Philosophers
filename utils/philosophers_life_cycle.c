@@ -1,4 +1,5 @@
-#include "../philo.h"
+#include "./../philo.h"
+
 
 static void	thinking_time(t_philo_table **table, t_thread *data)
 {
@@ -20,7 +21,9 @@ static void	eating_time(t_philo_table **table, t_thread *data)
 	gettimeofday(&((*table)->thinking_end), NULL);
 	time = ((*table)->thinking_end.tv_sec - (*table)->thinking_start.tv_sec) * 1000;
 	time += ((*table)->thinking_end.tv_usec - (*table)->thinking_start.tv_usec) / 1000;
-	(*table)->meal_time += time;
+	if ((*table)->total_meal != 0)
+		(*table)->meal_time += time;
+	(*table)->meal_time += data->eat_time;
 	if ((*table)->meal_time > data->death_time)
 	{
 		data->stop = 1;
@@ -61,6 +64,7 @@ static void	lock_unlock_forks(t_philo_table *table, int lock)
 		pthread_mutex_unlock(&(left_fork->fork));
 	}
 }
+
 
 void	*thread_operations(void *all_structs)
 {

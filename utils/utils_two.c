@@ -1,20 +1,35 @@
-#include "../philo.h"
+#include "./../philo.h"
 
-static int	is_dead(t_philo_table **table, t_thread *data)
+static void	*monitor(void *all_structs);
+static int	is_dead(t_philo_table **table, t_thread *data);
+
+void	creat_thread(t_thread *data, t_philo_table **table)
 {
-	t_philo_table	**temp;
+	pthread_t		thread[data->num_philo + 1];
+	t_philo_table	*temp;
+	t_structs		*all_structs;
+	int				i;
 
-	temp = table;
-	if ((*temp)->meal_time > data->death_time)
-		return ((*temp)->philo_num);
-	(*temp) = (*temp)->next;
-	while ((*temp)->philo_num != 1)
+	pthread_mutex_init(&(data->lock), NULL);
+	temp = *table;
+	all_structs = (t_structs *)malloc(sizeof(t_structs));
+	all_structs->data = data;
+	all_structs->table = temp;
+	gettimeofday(&(data->start), NULL);
+	pthread_create(&thread[0], NULL, monitor, (void *)all_structs);
+	i = 0;
+	while (++i < data->num_philo + 1)
 	{
-		if ((*temp)->meal_time > data->death_time)
-			return ((*temp)->philo_num);
-		(*temp) = (*temp)->next;
+		t_structs	*new_struct = new_struct = (t_structs *)malloc(sizeof(t_structs));
+		new_struct->data = data;
+		new_struct->table = temp;
+		pthread_create(&thread[i], NULL, thread_operations, (void *)new_struct);
+		temp = temp->next;
 	}
-	return (-1);
+	i = -1;
+	while (++i <= data->num_philo)
+		pthread_join(thread[i], NULL);
+	pthread_mutex_destroy(&(data->lock));
 }
 
 int	is_full(t_philo_table *table, t_thread *data)
@@ -22,14 +37,14 @@ int	is_full(t_philo_table *table, t_thread *data)
 	t_philo_table	*temp;
 
 	temp = table;
-	if (data->meals_num == -1)
+	if (data->num_meal == -1)
 		return (0);
-	if (temp->total_meal < data->meals_num)
+	if (temp->total_meal < data->num_meal)
 		return (0);
 	temp = temp->next;
 	while (temp->philo_num != 1)
 	{
-		if (temp->total_meal < data->meals_num - 1)
+		if (temp->total_meal < data->num_meal - 1)
 			return (0);
 		temp = temp->next;
 	}
@@ -64,34 +79,23 @@ static void	*monitor(void *all_structs)
 	return (NULL);
 }
 
-void	create_thread(int thread_count, t_thread *data, t_philo_table **table)
+static int	is_dead(t_philo_table **table, t_thread *data)
 {
-	pthread_t		thread[thread_count + 1];
-	t_philo_table	*temp;
-	t_structs		*all_structs;
-	int				i;
+	t_philo_table	**temp;
 
-	pthread_mutex_init(&(data->lock), NULL);
-	temp = (*table);
-	all_structs = (t_structs *)malloc(sizeof(t_structs));
-	all_structs->data = data;
-	all_structs->table = temp;
-	gettimeofday(&(data->start), NULL);
-	pthread_create(&thread[0], NULL, monitor, (void *)all_structs);
-	i = 0;
-	while (++i < thread_count + 1)
+	temp = table;
+	if ((*temp)->meal_time > data->death_time)
+		return ((*temp)->philo_num);
+	(*temp) = (*temp)->next;
+	while ((*temp)->philo_num != 1)
 	{
-		t_structs	*new_struct = (t_structs *)malloc(sizeof(t_structs));
-		new_struct->data = data;
-		new_struct->table = temp;
-		pthread_create(&thread[i], NULL, thread_operations, (void *)new_struct);
-		temp = temp->next;
+		if ((*temp)->meal_time > data->death_time)
+			return ((*temp)->philo_num);
+		(*temp) = (*temp)->next;
 	}
-	i = -1;
-	while (++i < thread_count)
-		pthread_join(thread[i], NULL);
-	pthread_mutex_destroy(&(data->lock));
+	return (-1);
 }
+
 
 void	total_meal_control(t_philo_table *table, t_thread *data)
 {
@@ -99,12 +103,12 @@ void	total_meal_control(t_philo_table *table, t_thread *data)
 	int				i;
 
 	i = 0;
-	if (data->meals_num == -1)
+	if (data->num_meal == -1)
 		return ;
 	temp = table;
-	while (i < data->philo_num)
+	while (i < data->num_philo)
 	{
-		if (temp->total_meal < data->meals_num)
+		if (temp->total_meal < data->num_meal)
 			return ;
 		temp = temp->next;
 		i++;

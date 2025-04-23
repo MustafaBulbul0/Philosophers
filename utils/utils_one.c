@@ -1,4 +1,4 @@
-#include "../philo.h"
+#include "./../philo.h"
 
 static int	ft_atoi(char *chNum)
 {
@@ -25,29 +25,29 @@ static int	ft_atoi(char *chNum)
 	return (j * k);
 }
 
-void	init_data(t_thread *data, int argc, char **argv)
+void	init_data(t_thread *data, char **argv, int argc)
 {
-	data->stop = 0;
-	data->return_val = 1;
-	data->philo_num = ft_atoi(argv[1]);
+	data->num_philo = ft_atoi(argv[1]);
 	data->death_time = ft_atoi(argv[2]);
 	data->eat_time = ft_atoi(argv[3]);
 	data->sleep_time = ft_atoi(argv[4]);
 	if (argc == 6)
-		data->meals_num = ft_atoi(argv[5]);
+		data->num_meal = ft_atoi(argv[5]);
 	else
-		data->meals_num = -1;
+		data->num_meal = -1;
+	data->stop = 0;
+	data->return_val = 1;
 }
 
 static void	init_table(t_philo_table *table, t_thread *data, t_philo_table *tail)
 {
-	t_philo_table	*temp;
 	int				num;
+	t_philo_table	*temp;
 
 	num = 1;
 	tail->next = table;
 	temp = table;
-	while (num <= data->philo_num)
+	while (num <= data->num_philo)
 	{
 		temp->philo_num = num;
 		temp->meal_time = 0;
@@ -71,7 +71,7 @@ int	sit_table(t_philo_table **table, t_thread *data)
 	head->next = NULL;
 	tail = head;
 	i = 0;
-	while (++i < data->philo_num)
+	while (++i < data->num_philo)
 	{
 		new_node = (t_philo_table *)malloc(sizeof(t_philo_table));
 		if (!new_node)
