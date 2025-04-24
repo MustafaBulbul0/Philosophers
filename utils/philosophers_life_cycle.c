@@ -19,15 +19,14 @@ static void	eating_time(t_philo_table **table, t_thread *data)
 	long long		time;
 
 	gettimeofday(&((*table)->thinking_end), NULL);
-	time = ((*table)->thinking_end.tv_sec - (*table)->thinking_start.tv_sec) * 1000;
-	time += ((*table)->thinking_end.tv_usec - (*table)->thinking_start.tv_usec) / 1000;
+	time = time_diff((*table)->thinking_start, (*table)->thinking_end);
 	if ((*table)->total_meal != 0)
 		(*table)->meal_time += time;
 	(*table)->meal_time += data->eat_time;
 	if ((*table)->meal_time > data->death_time)
 	{
 		data->stop = 1;
-		get_time(data, (*table)->philo_num, "died");
+		printf("%d %d died\n", (*table)->meal_time, (*table)->philo_num);
 		return ;
 	}
 	(*table)->meal_time = 0;
@@ -77,22 +76,17 @@ void	*thread_operations(void *all_structs)
 	table = structs->table;
 	while (1)
 	{
-		if (data->stop)
-			break ;
 		lock_unlock_forks(table, 1);
-		if (data->stop)
-			break ;
-		eating_time(&table, data);
+		if (data->stop == 0)
+			eating_time(&table, data);
 		total_meal_control(table, data);
-		if (data->stop)
-			break ;
 		lock_unlock_forks(table, 0);
+		if (data->stop == 0)
+			sleeping_time(&table, data);
+		if (data->stop == 0)
+			thinking_time(&table, data);
 		if (data->stop)
 			break ;
-		sleeping_time(&table, data);
-		if (data->stop)
-			break ;
-		thinking_time(&table, data);
 	}
 	return (NULL);
 }

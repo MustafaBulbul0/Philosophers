@@ -93,8 +93,8 @@ void	get_time(t_thread *data, int philo, char *text)
 
 	pthread_mutex_lock(&(data->lock));
 	gettimeofday(&end, NULL);
-	time = (end.tv_sec - data->start.tv_sec) * 1000;
-	time += (end.tv_usec - data->start.tv_usec) / 1000;
-	printf("%lld %d %s\n", time, philo, text);
+	time = time_diff(data->start, end);
+	if (data->stop == 0)
+		printf("%lld %d %s\n", time, philo, text);
 	pthread_mutex_unlock(&(data->lock));
 }

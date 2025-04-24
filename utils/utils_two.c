@@ -1,7 +1,7 @@
 #include "./../philo.h"
 
 static void	*monitor(void *all_structs);
-static int	is_dead(t_philo_table **table, t_thread *data);
+static int	is_dead(t_philo_table *table, t_thread *data);
 
 void	creat_thread(t_thread *data, t_philo_table **table)
 {
@@ -53,49 +53,49 @@ int	is_full(t_philo_table *table, t_thread *data)
 
 static void	*monitor(void *all_structs)
 {
-	t_structs		*structs;
-	t_thread		*data;
-	t_philo_table	*table;
-	int				philo_situation;
+	t_structs		*structs = (t_structs *)all_structs;
+	t_thread		*data = structs->data;
+	t_philo_table	*start = structs->table;
+
+	int				philo_id = -1;
 	long long		time;
 
-	structs = (t_structs *)all_structs;
-	data = structs->data;
-	table = structs->table;
-	while (data->stop != 1)
+	while (data->num_meal != -1)
 	{
-		philo_situation = is_dead(&(table), data);
-		if (philo_situation != -1)
+		philo_id = is_dead(start, data);
+		if (philo_id != -1)
 		{
 			data->stop = 1;
 			gettimeofday(&(data->end), NULL);
-			time = (data->end.tv_sec - data->start.tv_sec) * 1000;
-			time += (data->end.tv_usec - data->start.tv_usec) / 1000;
-			printf("%lld %d died\n", time, philo_situation);
-			break ;
-		}
+			time = time_diff(data->start, data->end);
+			printf("%d\n", data->num_meal);
+			printf("%lld %d died\n", time, philo_id);
+			break;
+		} 
 	}
-	free(structs);
 	return (NULL);
 }
 
-static int	is_dead(t_philo_table **table, t_thread *data)
+
+static int	is_dead(t_philo_table *table, t_thread *data)
 {
-	t_philo_table	**temp;
+	t_philo_table *current = table;
+	long long now;
+	long long time_since_meal;
 
-	temp = table;
-	if ((*temp)->meal_time > data->death_time)
-		return ((*temp)->philo_num);
-	(*temp) = (*temp)->next;
-	while ((*temp)->philo_num != 1)
+	gettimeofday(&data->end, NULL);
+	now = time_diff(data->start, data->end);
+
+	do
 	{
-		if ((*temp)->meal_time > data->death_time)
-			return ((*temp)->philo_num);
-		(*temp) = (*temp)->next;
-	}
-	return (-1);
-}
+		time_since_meal = now - current->meal_time;
+		if (time_since_meal > data->death_time)
+			return current->philo_num;
+		current = current->next;
+	} while (current != table); // dairesel liste için tam tur at
 
+	return -1;
+}
 
 void	total_meal_control(t_philo_table *table, t_thread *data)
 {
