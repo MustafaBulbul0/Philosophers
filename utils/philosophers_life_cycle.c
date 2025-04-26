@@ -1,6 +1,5 @@
 #include "./../philo.h"
 
-
 static void	thinking_time(t_philo_table **table, t_thread *data)
 {
 	gettimeofday(&((*table)->thinking_start), NULL);
@@ -26,7 +25,8 @@ static void	eating_time(t_philo_table **table, t_thread *data)
 	if ((*table)->meal_time > data->death_time)
 	{
 		data->stop = 1;
-		printf("%d %d died\n", (*table)->meal_time, (*table)->philo_num);
+		time = time_diff(data->start, (*table)->thinking_end);
+		printf("%lld %d died\n", time, (*table)->philo_num);
 		return ;
 	}
 	(*table)->meal_time = 0;
