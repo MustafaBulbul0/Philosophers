@@ -30,6 +30,8 @@ void	creat_thread(t_thread *data, t_philo_table **table)
 	while (++i <= data->num_philo)
 		pthread_join(thread[i], NULL);
 	pthread_mutex_destroy(&(data->lock));
+	free(all_structs);
+	free(thread);
 }
 
 t_structs	*new_struct_operation(t_thread *data, t_philo_table **table)

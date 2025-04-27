@@ -8,6 +8,8 @@ void	shut_program_scc(t_philo_table **table, t_thread *data)
 		free(data);
 	if (table && *table)
 		free_table(table);
+	if (table)
+		free(table);
 }
 
 static void	free_table(t_philo_table **table)

@@ -88,5 +88,6 @@ void	*thread_operations(void *all_structs)
 		if (data->stop)
 			break ;
 	}
+	free(all_structs);
 	return (NULL);
 }
