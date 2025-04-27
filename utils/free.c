@@ -1,6 +1,7 @@
 #include "./../philo.h"
 
 static void	free_table(t_philo_table **table);
+
 void	shut_program_scc(t_philo_table **table, t_thread *data)
 {
 	if (data)

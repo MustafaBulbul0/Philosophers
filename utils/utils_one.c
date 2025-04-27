@@ -39,7 +39,8 @@ void	init_data(t_thread *data, char **argv, int argc)
 	data->return_val = 1;
 }
 
-static void	init_table(t_philo_table *table, t_thread *data, t_philo_table *tail)
+static void	init_table(t_philo_table *table,
+	t_thread *data, t_philo_table *tail)
 {
 	int				num;
 	t_philo_table	*temp;

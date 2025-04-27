@@ -5,12 +5,13 @@ t_structs	*new_struct_operation(t_thread *data, t_philo_table **table);
 
 void	creat_thread(t_thread *data, t_philo_table **table)
 {
-	pthread_t		thread[data->num_philo + 1];
+	pthread_t		*thread;
 	t_philo_table	*temp;
 	t_structs		*all_structs;
 	t_structs		*new_struct;
 	int				i;
 
+	thread = (pthread_t *)malloc(sizeof(pthread_t) * (data->num_philo + 1));
 	pthread_mutex_init(&(data->lock), NULL);
 	temp = *table;
 	all_structs = (t_structs *)malloc(sizeof(t_structs));
@@ -43,11 +44,12 @@ t_structs	*new_struct_operation(t_thread *data, t_philo_table **table)
 
 static void	*monitor(void *all_structs)
 {
-	t_structs		*structs = (t_structs *)all_structs;
+	t_structs		*structs;
 	t_thread		*data;
 	t_philo_table	*temp;
 	int				i;
 
+	structs = (t_structs *)all_structs;
 	data = structs->data;
 	temp = structs->table;
 	if (data->num_meal != -1 && data->stop == 0)
