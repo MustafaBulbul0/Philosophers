@@ -1,10 +1,12 @@
 #include "philo.h"
 
 int	arg_checker(char **argv);
+
 int	main(int argc, char **argv)
 {
 	t_thread		*data;
 	t_philo_table	**table;
+
 	if (argc < 5 || argc > 6)
 		return (0);
 	if (arg_checker(argv))
@@ -20,13 +22,15 @@ int	main(int argc, char **argv)
 		return (0);
 	}
 	data->return_val = sit_table(table, data);
+	if (philo_control(data))
+		return (0);
 	if (data->return_val)
 		creat_thread(data, table);
 	shut_program_scc(table, data);
 	return (0);
 }
 
-int arg_checker(char **argv)
+int	arg_checker(char **argv)
 {
 	int	i;
 	int	j;

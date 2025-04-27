@@ -1,5 +1,5 @@
 NAME = philo
-CFLAG = -Wall -Wextra -g
+CFLAG = -Wall -Wextra -Werror
 RM = rm -rf
 CC = cc
 SRC = main.c \

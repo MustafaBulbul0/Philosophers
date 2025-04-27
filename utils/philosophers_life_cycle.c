@@ -2,6 +2,7 @@
 
 static void	thinking_time(t_philo_table **table, t_thread *data)
 {
+	usleep(1000);
 	gettimeofday(&((*table)->thinking_start), NULL);
 	get_time(data, (*table)->philo_num, "is thinking");
 }
@@ -49,8 +50,8 @@ static void	lock_unlock_forks(t_philo_table *table, int lock)
 	}
 	else
 	{
-		right_fork = turn_back(table);
 		left_fork = table;
+		right_fork = turn_back(table);
 	}
 	if (lock == 1)
 	{
@@ -63,7 +64,6 @@ static void	lock_unlock_forks(t_philo_table *table, int lock)
 		pthread_mutex_unlock(&(left_fork->fork));
 	}
 }
-
 
 void	*thread_operations(void *all_structs)
 {
