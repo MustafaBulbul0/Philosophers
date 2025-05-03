@@ -31,11 +31,11 @@ static void	eating_time(t_philo_table **table, t_thread *data)
 		return ;
 	}
 	(*table)->meal_time = 0;
-	(*table)->total_meal++;
 	get_time(data, (*table)->philo_num, "has taken a fork");
 	get_time(data, (*table)->philo_num, "has taken a fork");
 	get_time(data, (*table)->philo_num, "is eating");
 	usleep((data->eat_time) * 1000);
+	(*table)->total_meal++;
 }
 
 static void	lock_unlock_forks(t_philo_table *table, int lock)
