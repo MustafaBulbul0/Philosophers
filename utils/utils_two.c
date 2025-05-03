@@ -14,9 +14,7 @@ void	creat_thread(t_thread *data, t_philo_table **table)
 	thread = (pthread_t *)malloc(sizeof(pthread_t) * (data->num_philo + 1));
 	pthread_mutex_init(&(data->lock), NULL);
 	temp = *table;
-	all_structs = (t_structs *)malloc(sizeof(t_structs));
-	all_structs->data = data;
-	all_structs->table = temp;
+	all_structs = new_struct_operation(data, &temp);
 	gettimeofday(&(data->start), NULL);
 	pthread_create(&thread[0], NULL, monitor, (void *)all_structs);
 	i = 0;
