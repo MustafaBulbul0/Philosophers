@@ -1,7 +1,8 @@
 #include "./../philo.h"
 
-static void	*monitor(void *all_structs);
-t_structs	*new_struct_operation(t_thread *data, t_philo_table **table);
+static void			*monitor(void *all_structs);
+static t_structs	*new_struct_operation(t_thread *data,
+						t_philo_table **table);
 
 void	creat_thread(t_thread *data, t_philo_table **table)
 {
@@ -32,7 +33,7 @@ void	creat_thread(t_thread *data, t_philo_table **table)
 	free(thread);
 }
 
-t_structs	*new_struct_operation(t_thread *data, t_philo_table **table)
+static t_structs	*new_struct_operation(t_thread *data, t_philo_table **table)
 {
 	t_structs	*new_struct;
 
@@ -86,15 +87,4 @@ void	total_meal_control(t_philo_table *table, t_thread *data)
 		i++;
 	}
 	data->stop = 1;
-}
-
-int	philo_control(t_thread *data)
-{
-	if (data->num_philo == 1)
-	{
-		printf("0 1 has taken a fork");
-		printf("%d died\n", data->death_time);
-		return (1);
-	}
-	return (0);
 }

@@ -10,7 +10,9 @@ static void	thinking_time(t_philo_table **table, t_thread *data)
 static void	sleeping_time(t_philo_table **table, t_thread *data)
 {
 	get_time(data, (*table)->philo_num, "is sleeping");
+	pthread_mutex_lock(&data->lock);
 	(*table)->meal_time += data->sleep_time;
+	pthread_mutex_unlock(&data->lock);
 	usleep((data->sleep_time) * 1000);
 }
 
@@ -19,6 +21,7 @@ static void	eating_time(t_philo_table **table, t_thread *data)
 	long long		time;
 
 	gettimeofday(&((*table)->thinking_end), NULL);
+	pthread_mutex_lock(&data->lock);
 	time = time_diff((*table)->thinking_start, (*table)->thinking_end);
 	if ((*table)->total_meal != 0)
 		(*table)->meal_time += time;
@@ -27,15 +30,17 @@ static void	eating_time(t_philo_table **table, t_thread *data)
 	{
 		data->stop = 1;
 		time = time_diff(data->start, (*table)->thinking_end);
+		pthread_mutex_unlock(&data->lock);
 		printf("%lld %d died\n", time, (*table)->philo_num);
 		return ;
 	}
 	(*table)->meal_time = 0;
+	(*table)->total_meal++;
+	pthread_mutex_unlock(&data->lock);
 	get_time(data, (*table)->philo_num, "has taken a fork");
 	get_time(data, (*table)->philo_num, "has taken a fork");
 	get_time(data, (*table)->philo_num, "is eating");
 	usleep((data->eat_time) * 1000);
-	(*table)->total_meal++;
 }
 
 static void	lock_unlock_forks(t_philo_table *table, int lock)

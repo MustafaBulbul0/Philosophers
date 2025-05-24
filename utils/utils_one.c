@@ -1,6 +1,6 @@
 #include "./../philo.h"
 
-static int	ft_atoi(char *chNum)
+int	ft_atoi(char *chNum)
 {
 	int				i;
 	int				k;
@@ -25,68 +25,6 @@ static int	ft_atoi(char *chNum)
 	return (j * k);
 }
 
-void	init_data(t_thread *data, char **argv, int argc)
-{
-	data->num_philo = ft_atoi(argv[1]);
-	data->death_time = ft_atoi(argv[2]);
-	data->eat_time = ft_atoi(argv[3]);
-	data->sleep_time = ft_atoi(argv[4]);
-	if (argc == 6)
-		data->num_meal = ft_atoi(argv[5]);
-	else
-		data->num_meal = -1;
-	data->stop = 0;
-	data->return_val = 1;
-}
-
-static void	init_table(t_philo_table *table,
-	t_thread *data, t_philo_table *tail)
-{
-	int				num;
-	t_philo_table	*temp;
-
-	num = 1;
-	tail->next = table;
-	temp = table;
-	while (num <= data->num_philo)
-	{
-		temp->philo_num = num;
-		temp->meal_time = 0;
-		temp->total_meal = 0;
-		temp = temp->next;
-		num++;
-	}
-}
-
-int	sit_table(t_philo_table **table, t_thread *data)
-{
-	int				i;
-	t_philo_table	*new_node;
-	t_philo_table	*head;
-	t_philo_table	*tail;
-
-	head = (t_philo_table *)malloc(sizeof(t_philo_table));
-	if (!head)
-		return (0);
-	pthread_mutex_init(&(head->fork), NULL);
-	head->next = NULL;
-	tail = head;
-	i = 0;
-	while (++i < data->num_philo)
-	{
-		new_node = (t_philo_table *)malloc(sizeof(t_philo_table));
-		if (!new_node)
-			return (0);
-		pthread_mutex_init(&(new_node->fork), NULL);
-		new_node->next = NULL;
-		tail->next = new_node;
-		tail = new_node;
-	}
-	init_table(head, data, tail);
-	*table = head;
-	return (1);
-}
-
 void	get_time(t_thread *data, int philo, char *text)
 {
 	struct timeval	end;
@@ -98,4 +36,36 @@ void	get_time(t_thread *data, int philo, char *text)
 	if (data->stop == 0)
 		printf("%lld %d %s\n", time, philo, text);
 	pthread_mutex_unlock(&(data->lock));
+}
+
+t_philo_table	*turn_back(t_philo_table *table)
+{
+	t_philo_table	*temp;
+	int				philo;
+
+	philo = table->philo_num - 1;
+	temp = table;
+	while (temp->philo_num != philo)
+		temp = temp->next;
+	return (temp);
+}
+
+int	time_diff(struct timeval start, struct timeval end)
+{
+	int	time;
+
+	time = (end.tv_sec - start.tv_sec) * 1000;
+	time += (end.tv_usec - start.tv_usec) / 1000;
+	return (time);
+}
+
+int	philo_control(t_thread *data)
+{
+	if (data->num_philo == 1)
+	{
+		printf("0 1 has taken a fork\n");
+		printf("%d 1 died\n", data->death_time);
+		return (1);
+	}
+	return (0);
 }

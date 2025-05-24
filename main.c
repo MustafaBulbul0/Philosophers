@@ -23,7 +23,7 @@ int	main(int argc, char **argv)
 	}
 	data->return_val = sit_table(table, data);
 	if (philo_control(data))
-		return (0);
+		data->return_val = 0;
 	if (data->return_val)
 		creat_thread(data, table);
 	shut_program_scc(table, data);
