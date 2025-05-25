@@ -3,7 +3,7 @@ CFLAG = -Wall -Wextra -Werror -fsanitize=address
 RM = rm -rf
 CC = cc
 SRC = main.c \
-	./utils/utils_one.c ./utils/free.c \
+	./utils/utils_one.c ./utils/utils_two.c ./utils/free.c \
 	./philosophers/philosophers_life_cycle.c \
 	./philosophers/ft_initialize.c ./philosophers/creat_thread.c
 

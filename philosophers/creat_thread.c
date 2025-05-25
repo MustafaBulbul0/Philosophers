@@ -58,6 +58,7 @@ static void	*monitor(void *all_structs)
 		while (data->stop == 0)
 		{
 			i = 0;
+			pthread_mutex_lock(&data->lock);
 			while (i <= data->num_philo && temp->total_meal >= data->num_meal)
 			{
 				temp = temp->next;
@@ -65,6 +66,7 @@ static void	*monitor(void *all_structs)
 					data->stop = 1;
 				i++;
 			}
+			pthread_mutex_unlock(&data->lock);
 		}
 	}
 	return (NULL);

@@ -30,12 +30,10 @@ void	get_time(t_thread *data, int philo, char *text)
 	struct timeval	end;
 	long long		time;
 
-	pthread_mutex_lock(&(data->lock));
 	gettimeofday(&end, NULL);
 	time = time_diff(data->start, end);
 	if (data->stop == 0)
 		printf("%lld %d %s\n", time, philo, text);
-	pthread_mutex_unlock(&(data->lock));
 }
 
 t_philo_table	*turn_back(t_philo_table *table)
