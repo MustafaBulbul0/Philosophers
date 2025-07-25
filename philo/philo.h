@@ -52,5 +52,6 @@ int				time_diff(struct timeval start, struct timeval end);
 int				philo_control(t_thread *data);
 int				ft_atoi(char *chNum);
 int				ft_eating(t_philo_table **table, t_thread *data);
+int				check_if_stopped(t_thread *data);
 
 #endif

@@ -89,19 +89,17 @@ void	*thread_operations(void *all_structs)
 	structs = (t_structs *)all_structs;
 	data = structs->data;
 	table = structs->table;
-	while (1)
+	while (check_if_stopped(data) == 0)
 	{
 		lock_unlock_forks(table, 1);
-		if (data->stop == 0)
+		if (check_if_stopped(data) == 0)
 			eating_time(&table, data);
 		total_meal_control(table, data);
 		lock_unlock_forks(table, 0);
-		if (data->stop == 0)
+		if (check_if_stopped(data) == 0)
 			sleeping_time(&table, data);
-		if (data->stop == 0)
+		if (check_if_stopped(data) == 0)
 			thinking_time(&table, data);
-		if (data->stop)
-			break ;
 	}
 	free(all_structs);
 	return (NULL);

@@ -40,3 +40,13 @@ static int	getting_started(t_philo_table **table, t_thread *data)
 	}
 	return (0);
 }
+
+int	check_if_stopped(t_thread *data)
+{
+	int	stopped;
+
+	pthread_mutex_lock(&data->lock);
+	stopped = data->stop;
+	pthread_mutex_unlock(&data->lock);
+	return (stopped);
+}
