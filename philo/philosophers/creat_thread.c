@@ -76,19 +76,26 @@ void	total_meal_control(t_philo_table *table, t_thread *data)
 {
 	t_philo_table	*temp;
 	int				i;
+	int				all_philos_ate;
 
 	i = 0;
+	all_philos_ate = 1;
 	if (data->num_meal == -1)
 		return ;
+	pthread_mutex_lock(&data->lock);
 	temp = table;
+	i = 0;
 	while (i < data->num_philo)
 	{
 		if (temp->total_meal < data->num_meal)
-			return ;
+		{
+			all_philos_ate = 0;
+			break;
+		}
 		temp = temp->next;
 		i++;
 	}
-	pthread_mutex_lock(&data->lock);
-	data->stop = 1;
+	if (all_philos_ate == 1)
+		data->stop = 1;
 	pthread_mutex_unlock(&data->lock);
 }
