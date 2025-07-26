@@ -1,5 +1,5 @@
 NAME = philo
-CFLAG = -Wall -Wextra -Werror -fsanitize=address
+CFLAG = -Wall -Wextra -Werror -fsanitize=thread
 RM = rm -rf
 CC = cc
 

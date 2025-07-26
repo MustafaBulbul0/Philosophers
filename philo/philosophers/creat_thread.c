@@ -55,7 +55,7 @@ static void	*monitor(void *all_structs)
 	temp = structs->table;
 	if (data->num_meal != -1 && data->stop == 0)
 	{
-		while (data->stop == 0)
+		while (check_if_stopped(data) == 0)
 		{
 			i = 0;
 			pthread_mutex_lock(&data->lock);
@@ -88,5 +88,7 @@ void	total_meal_control(t_philo_table *table, t_thread *data)
 		temp = temp->next;
 		i++;
 	}
+	pthread_mutex_lock(&data->lock);
 	data->stop = 1;
+	pthread_mutex_unlock(&data->lock);
 }
